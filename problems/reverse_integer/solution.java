@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 class Solution {
     public int reverse(int x) {
         long Result = 0;
