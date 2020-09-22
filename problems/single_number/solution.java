@@ -1,17 +1,9 @@
 class Solution {
     public int singleNumber(int[] nums) {
-        HashMap<Integer, Integer> h = new HashMap<>();
+        int result = 0;
         for (int i : nums) {
-            if (!h.containsKey(i)){
-                h.put(i, 1);
-            }
-            else{
-                h.remove(i);
-            }
+            result ^= i;
         }
-        for (int i : h.keySet()) {
-            return i;
-        }
-        return -1;
+        return result;
     }
 }
