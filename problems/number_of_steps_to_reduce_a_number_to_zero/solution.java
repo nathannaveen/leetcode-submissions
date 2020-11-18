@@ -1,22 +1,16 @@
 class Solution {
     public int numberOfSteps (int num) {
-        if (num == 1){
-            return 1;
-        }
-        if (num <= 0){
-            return 0;
-        }
-        int c = 0;
-        while (num > 2){
-            if (num %2 == 0){
-                num/=2;
-                c++;
+        int counter = 0;
+        while (num > 0){
+
+            if ((num & 1)== 0) {
+                num >>= 1;
             }
-            else{
+            else {
                 num -= 1;
-                c++;
             }
+            counter ++;
         }
-        return c+2;
+        return counter;
     }
 }
