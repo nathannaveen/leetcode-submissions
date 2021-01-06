@@ -3,8 +3,7 @@ class Solution {
         String first = s.substring(0, s.length() / 2);
         String second = s.substring(s.length() / 2);
 
-        int a = 0;
-        int b = 0;
+        int counter = 0;
 
         Set<Character> h = new HashSet<>();
         h.add('a'); h.add('e'); h.add('i'); h.add('o'); h.add('u');
@@ -13,12 +12,12 @@ class Solution {
 
         for (int i = 0; i < first.length(); i++) {
             if (h.contains(first.charAt(i))){
-               a ++;
+                counter ++;
             }
             if (h.contains(second.charAt(i))){
-                b ++;
+                counter--;
             }
         }
-        return a == b;
+        return counter == 0;
     }
 }
