@@ -2,13 +2,9 @@ class Solution {
     public String reformatNumber(String number) {
         StringBuilder h = new StringBuilder();
         StringBuilder phoneNumber = new StringBuilder();
-//        Set<Character> num = new HashSet<>();
-//
-//        num.add('0'); num.add('1'); num.add('2'); num.add('3'); num.add('4');
-//        num.add('5'); num.add('6'); num.add('7'); num.add('8'); num.add('9');
 
         for (int i = 0; i < number.length(); i++) {
-            if ((int) number.charAt(i) <= 57 && (int) number.charAt(i) >= 48) {
+            if (Character.isDigit(number.charAt(i))){
                 h.append(number.charAt(i));
             }
         }
