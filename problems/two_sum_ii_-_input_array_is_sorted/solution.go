@@ -1,21 +1,22 @@
 func twoSum(numbers []int, target int) []int {
-	 h :=[]int{}
+	h := []int{}
 	left := 0
-	right := len(numbers) - 1;
+	right := len(numbers) - 1
 	sort.Ints(numbers)
 
-	for i := 0; i < len(numbers); i++ {
-		if numbers[left] + numbers[right] < target {
+	for left < right {
+		sum := numbers[left] + numbers[right]
+
+		if sum < target {
 			left ++
-		}
-		if numbers[left] + numbers[right] > target {
+		} else if sum > target {
 			right --
+		} else {
+			break
 		}
-		if numbers[left] + numbers[right] == target {
-			h = append(h, left + 1)
-			h = append(h, right + 1)
-			return h
-		}
+
 	}
+
+	h = append(h, left + 1, right + 1)
 	return h
 }
