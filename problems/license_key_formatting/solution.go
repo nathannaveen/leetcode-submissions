@@ -1,4 +1,3 @@
-
 func licenseKeyFormatting(S string, K int) string {
 	str := strings.ReplaceAll(S, "-", "")
 	str = strings.ToUpper(str)
