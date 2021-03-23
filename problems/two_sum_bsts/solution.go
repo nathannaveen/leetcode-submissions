@@ -8,8 +8,7 @@
  */
 func twoSumBSTs(root1 *TreeNode, root2 *TreeNode, target int) bool {
 	stack := []*TreeNode{root1}
-	arr1 := []int{}
-	arr2 := []int{}
+	m := make(map[int]int)
 
 	for len(stack) != 0 {
 		pop := stack[len(stack)-1]
@@ -17,7 +16,7 @@ func twoSumBSTs(root1 *TreeNode, root2 *TreeNode, target int) bool {
 
 		if pop != nil {
 			stack = append(stack, pop.Left, pop.Right)
-			arr1 = append(arr1, pop.Val)
+			m[target-pop.Val] = pop.Val
 		}
 	}
 
@@ -29,16 +28,11 @@ func twoSumBSTs(root1 *TreeNode, root2 *TreeNode, target int) bool {
 
 		if pop != nil {
 			stack = append(stack, pop.Left, pop.Right)
-			arr2 = append(arr2, pop.Val)
-		}
-	}
-
-	for _, i2 := range arr1 {
-		for _, i4 := range arr2 {
-			if i2+i4 == target {
+			if _, ok := m[pop.Val]; ok {
 				return true
 			}
 		}
 	}
+
 	return false
 }
