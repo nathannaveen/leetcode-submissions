@@ -1,33 +1,27 @@
 func tree2str(t *TreeNode) string {
-	if t == nil {
-		return ""
+	stack := []*TreeNode{t}
+	m := make(map[*TreeNode]int)
+	res := ""
+
+	for len(stack) != 0 {
+		popedVal := stack[len(stack)-1]
+
+		if popedVal != nil {
+			if m[popedVal] == 1 {
+				stack = stack[:len(stack)-1]
+				res += ")"
+			} else {
+				m[popedVal] = 1
+				res += "(" + strconv.Itoa(popedVal.Val)
+				if popedVal.Left == nil && popedVal.Right != nil {
+					res += "()"
+				}
+				stack = append(stack, popedVal.Right, popedVal.Left)
+			}
+		} else {
+			stack = stack[:len(stack)-1]
+		}
 	}
 
-	var str []string
-	preorderStr(t, &str)
-
-	s := strings.Join(str, "")
-	s = strings.TrimPrefix(s, "(")
-	s = strings.TrimSuffix(s, ")")
-	return s
-}
-
-func preorderStr(t *TreeNode, str *[]string) {
-	*str = append(*str, "(", strconv.Itoa(t.Val))
-
-	if t.Left == nil && t.Right == nil {
-		*str = append(*str, ")")
-		return
-	}
-
-	if t.Left == nil {
-		*str = append(*str, "()")
-	} else {
-		preorderStr(t.Left, str)
-	}
-
-	if t.Right != nil {
-		preorderStr(t.Right, str)
-	}
-	*str = append(*str, ")")
+	return res[1 : len(res)-1]
 }
