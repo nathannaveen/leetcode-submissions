@@ -4,14 +4,13 @@ func countLetters(S string) int {
 	counter := 0
 
 	for _, i := range S {
-		if letter == string(i) {
-			counter++
-		} else {
-			res += counter * (counter + 1)
-			counter = 1
+		if letter != string(i) {
+			res += (counter * (counter + 1)) / 2
+			counter = 0
 			letter = string(i)
 		}
+		counter++
 	}
-	res += counter * (counter + 1)
-	return res / 2
+	res += (counter * (counter + 1)) / 2
+	return res
 }
