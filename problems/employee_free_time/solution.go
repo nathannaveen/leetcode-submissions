@@ -25,10 +25,10 @@ func employeeFreeTime(schedule [][]*Interval) []*Interval {
             continue
         }
         if arr[i].End >= arr[i + 1].End {
-            arr = append(arr[:i + 1], arr[i+2:]...)
+            arr = append(arr[:i + 1], arr[i + 2:]...)
         } else {
             arr[i].End = arr[i + 1].End
-            arr = append(arr[:i + 1], arr[i+2:]...)
+            arr = append(arr[:i + 1], arr[i + 2:]...)
         }
         i--        
     }
@@ -39,3 +39,4 @@ func employeeFreeTime(schedule [][]*Interval) []*Interval {
     
     return res
 }
+
