@@ -15,11 +15,11 @@ func containsCycle(grid [][]byte) bool {
 		for j := 0; j < len(grid[0]); j++ {
 			arr[i][j].val = 1
 			if i > 0 && grid[i - 1][j] == grid[i][j] {
-				arr[i][j].val *= int(grid[i - 1][j] - 'a') + 2
+				arr[i][j].val *= int(grid[i - 1][j] - 'a') + 1 + 2
 				arr[i][j].p = append(arr[i][j].p, arr[i - 1][j].p...)
 			}
 			if j > 0 && grid[i][j - 1] == grid[i][j] {
-				arr[i][j].val *= int(grid[i][j - 1] - 'a') + 2
+				arr[i][j].val *= int(grid[i][j - 1] - 'a') + 1 + 2
 				arr[i][j].p = append(arr[i][j].p, arr[i][j - 1].p...)
 			}
 			if len(arr[i][j].p) == 0 {
@@ -27,7 +27,7 @@ func containsCycle(grid [][]byte) bool {
 				arr[i][j].p = []points{ a }
 			}
 
-			if arr[i][j].val != 1 && arr[i][j].val != int(grid[i][j] - 'a') + 2 {
+			if arr[i][j].val != 1 && arr[i][j].val != int(grid[i][j] - 'a') + 1 + 2 {
 
 				b, done := ifStartIsSame(arr, i, j)
 				if done {
