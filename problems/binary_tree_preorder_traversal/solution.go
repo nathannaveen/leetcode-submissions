@@ -7,18 +7,19 @@
  * }
  */
 func preorderTraversal(root *TreeNode) []int {
-	res := []int{}
-	stack := []*TreeNode{}
-	stack = append(stack, root)
+    if root != nil {
+        return helper([]int{}, root)
+    }
+    return nil
+}
 
-	for len(stack) != 0 {
-		val := stack[len(stack) - 1]
-		stack = stack[:len(stack) - 1]
-
-		if val != nil {
-			res = append(res, val.Val)
-			stack = append(stack, val.Right, val.Left)
-		}
-	}
-	return res
+func helper(res []int, root *TreeNode) []int {
+    res = append(res, root.Val)
+    if root.Left != nil {
+        res = helper(res, root.Left)
+    } 
+    if root.Right != nil {
+        res = helper(res, root.Right)
+    }
+    return res
 }
