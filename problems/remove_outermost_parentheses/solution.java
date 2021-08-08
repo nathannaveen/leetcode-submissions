@@ -6,7 +6,6 @@ class Solution {
         for (int i = 0; i < S.length(); i++) {
             if (h.size() == 1 && S.charAt(i) == ')'){
                 h.pop();
-                continue;
             }
             else if (h.size() == 0 && S.charAt(i) == '('){
                 h.push('(');
