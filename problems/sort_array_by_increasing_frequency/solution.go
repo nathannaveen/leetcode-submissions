@@ -1,36 +1,24 @@
 func frequencySort(nums []int) []int {
-	arr := [][]int{}
-	counter := 0
-
-	for _, num := range nums {
-		contains := false
-
-		for _, ints := range arr {
-			if ints[1] == num {
-				ints[0]++
-				contains = true
-				break
-			}
-		}
-
-		if !contains {
-			arr = append(arr, []int{1, num})
-		}
-	}
-
-	for i := 1; i < len(arr); i++ {
-		if i >= 1 && ((arr[i-1][0] > arr[i][0]) || (arr[i-1][0] == arr[i][0] && arr[i-1][1] < arr[i][1])) {
-			arr[i], arr[i-1] = arr[i-1], arr[i]
-			i -= 2
-		}
-	}
-
-	for i := 0; i < len(arr); i++ {
-		for j := 0; j < arr[i][0]; j++ {
-			nums[counter] = arr[i][1]
-			counter++
-		}
-	}
-
-	return nums
+    m := make( map[int] int ) // map[val] index in arr
+    arr := [][]int{}
+    res := []int{}
+    
+    for _, num := range nums {
+        if _, ok := m[num]; !ok {
+            arr = append(arr, []int{})
+            m[num] = len(arr) - 1
+        }
+        arr[m[num]] = append(arr[m[num]], num)
+    }
+    
+    sort.Slice(arr, func(i, j int) bool {
+        if len(arr[i]) == len(arr[j]) { return arr[i][0] > arr[j][0] }
+        return len(arr[i]) < len(arr[j])
+    })
+    
+    for _, a := range arr {
+        res = append(res, a...)
+    }
+    
+    return res
 }
