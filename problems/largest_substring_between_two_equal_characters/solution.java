@@ -6,7 +6,7 @@ class Solution {
         for (int i = 0; i < s.length(); i++) {
             if (h.containsKey(s.charAt(i))){
                 contains = true;
-                maxCounter = Math.max(maxCounter, (i - 1) - h.get(s.charAt(i)));
+                maxCounter = Math.max(maxCounter, i - (h.get(s.charAt(i)) + 1));
             }
             else {
                 h.put(s.charAt(i), i);
