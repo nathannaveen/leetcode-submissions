@@ -1,5 +1,5 @@
 type ParkingSystem struct {
-	cars []int
+    cars []int // cars {big, medium, small}
 }
 
 func Constructor(big int, medium int, small int) ParkingSystem {
