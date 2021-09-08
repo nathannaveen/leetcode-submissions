@@ -1,17 +1,11 @@
 func shiftingLetters(S string, shifts []int) string {
-	letters := []rune{}
-	for _, i := range S {
-		letters = append(letters, i)
-	}
+    res := make([]rune, len(shifts))
+    totalShifts := 0
+    
+    for i := len(shifts) - 1; i >= 0; i-- {
+        totalShifts += shifts[i]
+        res[i] = rune((int(S[i] - 'a') + totalShifts) % 26) + 'a'
+    }
 
-	for i := 0; i < len(S); i++ {
-		for j := 0; j <= i; j++ {
-			newLetterInt := int(letters[j]) + shifts[i]
-			if newLetterInt > 122 { // overflow of alphabets
-				newLetterInt = (newLetterInt-123)%26 + 'a'
-			}
-			letters[j] = rune(newLetterInt)
-		}
-	}
-	return string(letters)
+    return string(res)
 }
