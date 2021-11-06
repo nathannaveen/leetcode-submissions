@@ -5,6 +5,7 @@ func minimumSemesters(n int, relations [][]int) int {
     for _, relation := range relations {
         prerequisite := relation[0]
         course := relation[1]
+        
         m[prerequisite] = append(m[prerequisite], course)
         numOfPre[course - 1]++
     }
