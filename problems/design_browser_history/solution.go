@@ -21,16 +21,23 @@ func (this *BrowserHistory) Visit(url string)  {
 
 
 func (this *BrowserHistory) Back(steps int) string {
-    this.position -= int(math.Min(float64(steps), float64(this.position)))
+    this.position -= min(steps, this.position)
     return this.history[this.position]
 }
 
 
 func (this *BrowserHistory) Forward(steps int) string {
-    this.position += int(math.Min(float64(steps), float64(len(this.history) - this.position - 1)))
+    maxForward := len(this.history) - this.position - 1
+    
+    this.position += min(steps, maxForward)
+    
     return this.history[this.position]
 }
 
+func min(a, b int) int {
+    if a < b { return a }
+    return b
+}
 
 /**
  * Your BrowserHistory object will be instantiated and called as such:
