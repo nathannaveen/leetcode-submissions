@@ -8,7 +8,7 @@ func validTree(n int, edges [][]int) bool {
     }
     
     counter := 0
-    stack := []int{ edges[0][0] }
+    queue := []int{ edges[0][0] }
     m := make(map[int] []int)
     contains := make(map[int] int)
 
@@ -17,13 +17,13 @@ func validTree(n int, edges [][]int) bool {
         m[i[1]] = append(m[i[1]], i[0])
     }
 
-    for len(stack) != 0 {
-        pop := stack[len(stack) - 1]
-        stack = stack[:len(stack) - 1]
+    for len(queue) != 0 {
+        pop := queue[0]
+        queue = queue[1:]
 
         if contains[pop] != 1 {
             counter++
-            stack = append(stack, m[pop]...)
+            queue = append(queue, m[pop]...)
             contains[pop] = 1
         }
     }
