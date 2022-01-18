@@ -8,11 +8,11 @@ func addSpaces(start, end int) (res string) {
 func fullJustify(words []string, maxWidth int) []string {
     start := 0
     res := []string{}
-    n := 0
+    lineLength := 0
     
     for i := 0; i < len(words); i++ {
-        if n + len(words[i]) <= maxWidth {
-            n += len(words[i]) + 1
+        if lineLength + len(words[i]) <= maxWidth {
+            lineLength += len(words[i]) + 1
         } else {
             numberOfWords := i - start
             line := ""
@@ -20,10 +20,10 @@ func fullJustify(words []string, maxWidth int) []string {
             if numberOfWords == 1 {
                 line = words[i - 1] + addSpaces(len(words[i - 1]), maxWidth)
             } else {
-                n -= 1
+                lineLength -= 1
                 numBigSpaces := numberOfWords - 1
-                numberOfSpaces := (maxWidth - n) / numBigSpaces
-                additionalSpaces := (maxWidth - n) % numBigSpaces
+                numberOfSpaces := (maxWidth - lineLength) / numBigSpaces
+                additionalSpaces := (maxWidth - lineLength) % numBigSpaces
                 
                 j := start
                 
@@ -44,7 +44,7 @@ func fullJustify(words []string, maxWidth int) []string {
             }
             
             res = append(res, line)
-            n = 0
+            lineLength = 0
             start = i
             i--
         }
