@@ -11,11 +11,12 @@ func maxPoints(points [][]int) int {
         }
         
         for _, b := range m {
-            if b > max { max = b }
+            newB := (b + 1)
+            if newB > max { max = newB }
         }
     }
     
     if len(points) == 1 { return 1 }
     
-    return max + 1
+    return max
 }
