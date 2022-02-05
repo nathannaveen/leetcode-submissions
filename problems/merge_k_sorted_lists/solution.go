@@ -6,30 +6,28 @@
  * }
  */
 func mergeKLists(lists []*ListNode) *ListNode {
-    arr := []int{}
-    for _, head := range lists {
-        cur := head
+    res := &ListNode{}
+    cur := res
+    done := false
+    
+    for !done {
+        done = true
+        min := 10000
         
-        for cur != nil {
-            arr = append(arr, cur.Val)
-            cur = cur.Next
-        }
-    }
-    
-    sort.Ints(arr)
-    
-    if len(arr) > 0 {
-        res := &ListNode{
-            Val: arr[0],
-        }
-        cur := res
-        for i := 1; i < len(arr); i++ {
-            cur.Next = &ListNode{
-                Val: arr[i],
+        for _, list := range lists {
+            if list != nil && list.Val < min {
+                min = list.Val
+                done = false
             }
-            cur = cur.Next
         }
-        return res
+        for i := range lists {
+            if lists[i] != nil && lists[i].Val == min {
+                cur.Next = &ListNode{ Val: min }
+                cur = cur.Next
+                lists[i] = lists[i].Next
+            }
+        }
     }
-    return nil
+    
+    return res.Next
 }
