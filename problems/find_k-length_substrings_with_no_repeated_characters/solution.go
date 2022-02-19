@@ -1,12 +1,12 @@
-func numKLenSubstrNoRepeats(S string, K int) int {
-	if K > len(S) {
+func numKLenSubstrNoRepeats(s string, k int) int {
+    if k > len(s) {
 		return 0
 	}
 	counter, res, m := 0, 0, make(map[uint8]int)
 
-	for i := 0; i < K; i++ {
-		m[S[i]]++
-		if m[S[i]] == 2 {
+	for i := 0; i < k; i++ {
+		m[s[i]]++
+		if m[s[i]] == 2 {
 			counter++
 		}
 	}
@@ -14,15 +14,15 @@ func numKLenSubstrNoRepeats(S string, K int) int {
 		res++
 	}
 
-	for i := K; i < len(S); i++ {
-		m[S[i-K]]--
+	for i := k; i < len(s); i++ {
+		m[s[i-k]]--
 
-		if m[S[i-K]] == 1 {
+		if m[s[i-k]] == 1 {
 			counter--
 		}
-		m[S[i]]++
+		m[s[i]]++
 
-		if m[S[i]] == 2 {
+		if m[s[i]] == 2 {
 			counter++
 		}
 		if counter == 0 {
