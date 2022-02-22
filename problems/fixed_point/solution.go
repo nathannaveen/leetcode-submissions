@@ -1,7 +1,7 @@
 func fixedPoint(arr []int) int {
-	for i, n := range arr {
-		if i == n {
-			return n
+	for i := range arr {
+		if i == arr[i] {
+			return arr[i]
 		}
 	}
 	return -1
