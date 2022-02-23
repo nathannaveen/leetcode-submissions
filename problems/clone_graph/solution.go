@@ -6,16 +6,14 @@
  * }
  */
 
-var m = make(map[*Node] *Node)
-
 func cloneGraph(node *Node) *Node {
     if node == nil {
         return nil
     }
-    return helper(node)
+    return helper(node, make(map[*Node] *Node))
 }
 
-func helper(node *Node) *Node {
+func helper(node *Node, m map[*Node] *Node) *Node {
     if val, ok := m[node]; ok {
         return val
     }
@@ -24,7 +22,7 @@ func helper(node *Node) *Node {
     m[node] = newNode
     
     for _, neighbor := range node.Neighbors {
-        newNode.Neighbors = append(newNode.Neighbors, helper(neighbor))
+        newNode.Neighbors = append(newNode.Neighbors, helper(neighbor, m))
     }
     
     return newNode
