@@ -1,28 +1,19 @@
 func searchMatrix(matrix [][]int, target int) bool {
-	if len(matrix) == 0 {
-		return false
-	}
-
-	low := 0
-	high := len(matrix) * len(matrix[0]) -1
-
-	for low <= high {
-		mid := (low + high)/2
-		i := mid / len(matrix[0])
-		j := mid % len(matrix[0])
-
-		h := matrix[i][j]
-
-		if h == target {
-			return true
-		}
-
-		if h > target {
-			high = mid-1
-		} else {
-			low = mid+1
-		}
-	}
-
-	return false
+    i := 0
+    
+    for i = 0; i < len(matrix) - 1; i++ {
+        if i + 1 < len(matrix) && matrix[i + 1][0] > target {
+            break
+        }
+    }
+    
+    for j := 0; j < len(matrix[0]); j++ {
+        if matrix[i][j] == target {
+            return true
+        } else if matrix[i][j] > target {
+            break
+        }
+    }
+    
+    return false
 }
