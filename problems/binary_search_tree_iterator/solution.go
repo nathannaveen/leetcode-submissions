@@ -12,14 +12,13 @@ type BSTIterator struct {
 }
 
 func Constructor(root *TreeNode) BSTIterator {
-    arr := helper(root)
-    
+    arr := helper(root)    
     sort.Ints(arr)
     
     return BSTIterator{arr, 0}
 }
 
-func helper(root *TreeNode) []int {
+func helper(root *TreeNode) []int { // find all values in root and append them to a array
     res := []int{}
     if root != nil {
         res = append(res, root.Val)
