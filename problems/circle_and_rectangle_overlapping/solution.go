@@ -15,16 +15,16 @@ func checkOverlap(radius int, x_center int, y_center int, x1 int, y1 int, x2 int
 		return true
 	}
 
-	if powerOfTwo(x_center-x1)+powerOfTwo(y_center-y1) <= powerOfTwo(radius) ||
-		powerOfTwo(x_center-x1)+powerOfTwo(y_center-y2) <= powerOfTwo(radius) ||
-		powerOfTwo(x_center-x2)+powerOfTwo(y_center-y1) <= powerOfTwo(radius) ||
-		powerOfTwo(x_center-x2)+powerOfTwo(y_center-y2) <= powerOfTwo(radius) {
+	if square(x_center-x1)+square(y_center-y1) <= square(radius) ||
+		square(x_center-x1)+square(y_center-y2) <= square(radius) ||
+		square(x_center-x2)+square(y_center-y1) <= square(radius) ||
+		square(x_center-x2)+square(y_center-y2) <= square(radius) {
 		return true
 	}
 
 	return false
 }
 
-func powerOfTwo(n int) int {
+func square(n int) int {
 	return n * n
 }
