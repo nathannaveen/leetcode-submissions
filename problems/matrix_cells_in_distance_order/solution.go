@@ -5,7 +5,7 @@ func allCellsDistOrder(rows int, cols int, rCenter int, cCenter int) [][]int {
     
     res := [][]int{}
     
-    queue := [][]int{ []int{rCenter, cCenter} }
+    queue := []key{ {rCenter, cCenter} }
     
     visited := map[key] bool { key{rCenter, cCenter} : true }
     
@@ -13,17 +13,17 @@ func allCellsDistOrder(rows int, cols int, rCenter int, cCenter int) [][]int {
         if i < 0 || j < 0 || i >= rows || j >= cols || visited[key{i, j}] {
             return
         }
-        queue = append(queue, []int{i, j})
+        queue = append(queue, key{i, j})
         visited[key{i, j}] = true
     }
     
     for len(queue) > 0 {
         pop := queue[0]
         queue = queue[1:]
-
-        i, j := pop[0], pop[1]
-
-        res = append(res, pop)
+        
+        i, j := pop.i, pop.j
+        
+        res = append(res, []int{i, j})
 
         appendToQueue(i + 1, j)
         appendToQueue(i - 1, j)
