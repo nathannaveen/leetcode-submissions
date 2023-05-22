@@ -1,31 +1,29 @@
+type key struct {
+    val int
+    freq int
+}
+
 func topKFrequent(nums []int, k int) []int {
-	arr := [][]int{}
+    arr := []key{}
+    m := map[int] int {} // value : index in arr
 
-	for _, num := range nums {
-		contains := false
-		for _, ints := range arr {
-			if ints[1] == num {
-				ints[0]++
-				contains = true
-				break
-			}
-		}
-		if !contains {
-			arr = append(arr, []int{1, num})
-		}
-	}
+    for _, num := range nums {
+        if _, ok := m[num]; !ok {
+            arr = append(arr, key{num, 0})
+            m[num] = len(arr) - 1
+        }
+        arr[m[num]].freq++
+    }
 
-	for i := 1; i < len(arr); i++ {
-		if i >= 1 && arr[i-1][0] < arr[i][0] {
-			arr[i], arr[i-1] = arr[i-1], arr[i]
-			i -= 2
-		}
-	}
+    sort.Slice(arr, func(i, j int) bool {
+        return arr[i].freq > arr[j].freq
+    })
 
-	nums = []int{}
-	for i := 0; i < k; i++ {
-		nums = append(nums, arr[i][1])
-	}
+    res := make([]int, k)
 
-	return nums
+    for i := 0; i < k; i++ {
+        res[i] = arr[i].val
+    }
+
+    return res
 }
