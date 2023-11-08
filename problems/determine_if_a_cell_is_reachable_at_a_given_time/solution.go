@@ -4,7 +4,7 @@ func isReachableAtTime(sx int, sy int, fx int, fy int, t int) bool {
     }
     xDiff, yDiff := abs(fx - sx), abs(fy - sy)
     min := int(math.Min(float64(xDiff), float64(yDiff)))
-    z := xDiff - min + yDiff - min + min
+    z := xDiff - min + yDiff
     
     return t >= z
 }
