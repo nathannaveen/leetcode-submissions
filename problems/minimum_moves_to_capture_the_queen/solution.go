@@ -1,14 +1,14 @@
 func minMovesToCaptureTheQueen(a int, b int, c int, d int, e int, f int) int {
     res := 100000
     if a == e {
-        fmt.Println(a, c, e, abs(a-c), abs(a - e))
+        // fmt.Println(a, c, e, abs(a-c), abs(a - e))
         if a == c && abs(d - f) + abs(d - b) == abs(b - f) {
             res = 2
         } else {
             res = 1
         }
     } else if b == f {
-        fmt.Println(abs(a-c), abs(a - e))
+        // fmt.Println(abs(a-c), abs(a - e))
         if b == d && abs(c - e) + abs(c - a) == abs(a - e) {
             res = 2
         } else {
@@ -30,7 +30,7 @@ func minMovesToCaptureTheQueen(a int, b int, c int, d int, e int, f int) int {
     
     if dark == qDark {
         if abs(e - c) == abs(f - d) { // one move
-            if abs(c - a) == abs(d - b) && abs(a - e) + abs(a - c) == abs(c - e) {
+            if abs(c - a) == abs(d - b) && abs(a - e) + abs(a - c) == abs(c - e) && abs(b - f) + abs(b - d) == abs(d - f) {
                 res = min(2, res)
             } else {
                 res = 1
