@@ -1,14 +1,27 @@
 func climbStairs(n int) int {
-	if n <= 1 {
-		return n
-	}
-	total := 0
-	old := 1
-	oldold := 1
-	for i := 2; i <= n; i++ {
-		total = old + oldold
-		oldold = old
-		old = total
-	}
-	return total
+    dp := map[int] int {}
+    return helper(n, 0, dp)
+}
+
+func helper(n, cur int, dp map[int] int) int {
+    if val, ok := dp[cur]; ok {
+        return val
+    }
+
+    if n == cur {
+        return 1
+    }
+
+    res := 0
+
+    if n - cur >= 1 {
+        res += helper(n, cur + 1, dp)
+    }
+    if n - cur >= 2 {
+        res += helper(n, cur + 2, dp)
+    }
+
+    dp[cur] = res
+
+    return res
 }
