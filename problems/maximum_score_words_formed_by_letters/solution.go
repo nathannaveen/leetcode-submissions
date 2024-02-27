@@ -22,10 +22,10 @@ func maxScoreWords(words []string, letters []byte, score []int) int {
         letterFreq[l]++
     }
 
-    return helper(wordLetters, 0, letterFreq, score, wordToIndex)
+    return backtrack(wordLetters, 0, letterFreq, score, wordToIndex)
 }
 
-func helper(wordLetters map[string] map[byte] int, used int, letterFreq map[byte] int, score []int, wordToIndex map[string] int) int {
+func backtrack(wordLetters map[string] map[byte] int, used int, letterFreq map[byte] int, score []int, wordToIndex map[string] int) int {
     if val, ok := dp[used]; ok {
         return val
     }
@@ -52,7 +52,7 @@ func helper(wordLetters map[string] map[byte] int, used int, letterFreq map[byte
             for letter, freq := range letters {
                 letterFreq[letter] -= freq
             }
-            res = max(res, n + helper(wordLetters, used | (1 << wordToIndex[word]), letterFreq, score, wordToIndex))
+            res = max(res, n + backtrack(wordLetters, used | (1 << wordToIndex[word]), letterFreq, score, wordToIndex))
             for letter, freq := range letters {
                 letterFreq[letter] += freq
             }
