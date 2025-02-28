@@ -46,23 +46,38 @@ func main() {
 				continue
 			}
 
+			moveSuccess := true
 			for _, file := range files {
 				oldPath := filepath.Join(oldDir, file.Name())
 				newPath := filepath.Join(newDir, file.Name())
 				err = os.Rename(oldPath, newPath)
 				if err != nil {
 					log.Printf("Error moving file %s to %s: %v", oldPath, newPath, err)
-					continue
+					moveSuccess = false
+					break
 				}
 			}
 
-			// Remove the old directory
-			err = os.Remove(oldDir)
-			if err != nil {
-				log.Printf("Error removing directory %s: %v", oldDir, err)
-			}
+			// Only try to remove the directory if all files were moved successfully
+			if moveSuccess {
+				// Check if directory is empty
+				remaining, err := os.ReadDir(oldDir)
+				if err != nil {
+					log.Printf("Error checking if directory is empty %s: %v", oldDir, err)
+					continue
+				}
 
-			log.Printf("Moved problem directory: %s", name)
+				if len(remaining) == 0 {
+					err = os.RemoveAll(oldDir)
+					if err != nil {
+						log.Printf("Error removing directory %s: %v", oldDir, err)
+						continue
+					}
+					log.Printf("Successfully moved and removed directory: %s", name)
+				} else {
+					log.Printf("Directory not empty after move, could not remove: %s", oldDir)
+				}
+			}
 		}
 	}
 }
