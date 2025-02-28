@@ -1,0 +1,36 @@
+name: Process LeetCode Problems
+
+on:
+  workflow_run:
+    workflows: ["Sync Leetcode"]
+    types:
+      - completed
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Create problems directory
+        run: mkdir -p problems
+
+      - name: Process problems
+        run: go run scripts/process_problems.go
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add problems/
+          git commit -m "Move processed problems to problems directory" || echo "No changes to commit"
+          git push 
