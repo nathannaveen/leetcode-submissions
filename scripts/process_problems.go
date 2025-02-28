@@ -1,14 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
-func main() {
-	// Process all directories in the root directory
+// moveProblemsToRoot moves all problem directories to the problems directory
+func moveProblemsToRoot() {
 	entries, err := os.ReadDir(".")
 	if err != nil {
 		log.Fatal("Error reading directory:", err)
@@ -80,4 +82,89 @@ func main() {
 			}
 		}
 	}
+}
+
+// organizeProblemsByHundreds organizes problems into groups of 100
+func organizeProblemsByHundreds() {
+	problemsDir := "problems"
+	entries, err := os.ReadDir(problemsDir)
+	if err != nil {
+		log.Fatal("Error reading problems directory:", err)
+	}
+
+	// First, create all the hundred directories we need
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+
+		name := entry.Name()
+		parts := strings.Split(name, "-")
+		if len(parts) == 0 {
+			continue
+		}
+
+		// Get problem number
+		num, err := strconv.Atoi(parts[0])
+		if err != nil {
+			log.Printf("Error parsing problem number from %s: %v", name, err)
+			continue
+		}
+
+		// Calculate which hundred group this belongs to
+		hundredStart := ((num-1)/100)*100 + 1
+		hundredEnd := hundredStart + 99
+		hundredDir := filepath.Join(problemsDir, fmt.Sprintf("%d-%d", hundredStart, hundredEnd))
+
+		err = os.MkdirAll(hundredDir, 0755)
+		if err != nil {
+			log.Printf("Error creating hundred directory %s: %v", hundredDir, err)
+			continue
+		}
+	}
+
+	// Now move all problem directories into their respective hundred directories
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+
+		name := entry.Name()
+		parts := strings.Split(name, "-")
+		if len(parts) == 0 {
+			continue
+		}
+
+		// Get problem number
+		num, err := strconv.Atoi(parts[0])
+		if err != nil {
+			log.Printf("Error parsing problem number from %s: %v", name, err)
+			continue
+		}
+
+		// Calculate which hundred group this belongs to
+		hundredStart := ((num-1)/100)*100 + 1
+		hundredEnd := hundredStart + 99
+		hundredDir := filepath.Join(problemsDir, fmt.Sprintf("%d-%d", hundredStart, hundredEnd))
+
+		// Move the problem directory to its hundred group
+		oldPath := filepath.Join(problemsDir, name)
+		newPath := filepath.Join(hundredDir, name)
+
+		err = os.Rename(oldPath, newPath)
+		if err != nil {
+			log.Printf("Error moving directory %s to %s: %v", oldPath, newPath, err)
+			continue
+		}
+
+		log.Printf("Moved problem %s to group %d-%d", name, hundredStart, hundredEnd)
+	}
+}
+
+func main() {
+	// First move all problems to the problems directory
+	moveProblemsToRoot()
+
+	// Then organize them into hundreds
+	organizeProblemsByHundreds()
 }
