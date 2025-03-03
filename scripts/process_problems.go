@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -76,6 +77,15 @@ func moveToHundredGroup(problemPath string, name string) error {
 	return nil
 }
 
+// moveFile moves a file or directory using git mv to preserve history
+func moveFile(src, dst string) error {
+	cmd := exec.Command("git", "mv", src, dst)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("git mv failed: %v", err)
+	}
+	return nil
+}
+
 // processNewProblems moves problems from root to their correct hundred groups
 func processNewProblems() {
 	entries, err := os.ReadDir(".")
@@ -117,9 +127,9 @@ func processNewProblems() {
 		for _, file := range files {
 			oldPath := filepath.Join(oldDir, file.Name())
 			newPath := filepath.Join(tempDir, file.Name())
-			err = os.Rename(oldPath, newPath)
+			err = moveFile(oldPath, newPath)
 			if err != nil {
-				log.Printf("Error moving file %s to %s: %v", oldPath, newPath, err)
+				log.Printf("Error moving %s to %s: %v\n", oldPath, newPath, err)
 				moveSuccess = false
 				break
 			}

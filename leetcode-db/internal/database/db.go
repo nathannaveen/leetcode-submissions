@@ -7,7 +7,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// Config holds database configuration
 type Config struct {
 	Host     string
 	Port     int
@@ -17,7 +16,6 @@ type Config struct {
 	SSLMode  string
 }
 
-// NewConnection creates a new database connection
 func NewConnection(config *Config) (*sql.DB, error) {
 	connStr := fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
@@ -41,7 +39,7 @@ func NewConnection(config *Config) (*sql.DB, error) {
 	return db, nil
 }
 
-// DefaultConfig returns a default configuration for local development
+// DefaultConfig is for local development
 func DefaultConfig() *Config {
 	return &Config{
 		Host:     "localhost",

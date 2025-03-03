@@ -7,17 +7,14 @@ import (
 	"leetcode-db/internal/models"
 )
 
-// Repository handles database operations
 type Repository struct {
 	db *sql.DB
 }
 
-// NewRepository creates a new Repository
 func NewRepository(db *sql.DB) *Repository {
 	return &Repository{db: db}
 }
 
-// StoreProblem stores a problem in the database
 func (r *Repository) StoreProblem(problem *models.Problem) error {
 	_, err := r.db.Exec(`
         INSERT INTO problems (id, title, description, folder_path, solved_at)
@@ -36,7 +33,6 @@ func (r *Repository) StoreProblem(problem *models.Problem) error {
 	return nil
 }
 
-// StoreSolution stores a solution in the database
 func (r *Repository) StoreSolution(solution *models.Solution) error {
 	_, err := r.db.Exec(`
         INSERT INTO solutions (problem_id, language, code, file_path, commit_date)

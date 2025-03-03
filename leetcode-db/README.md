@@ -56,7 +56,7 @@ http://localhost:3000/recent_solutions
 
 5. Search problems by text:
 ```
-http://localhost:3000/rpc/search_problems?search_query=dynamic%20programming
+http://localhost:3000/rpc/search_problems?search_query=two%20sum
 ```
 
 ### Advanced Filtering

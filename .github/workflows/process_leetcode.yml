@@ -31,11 +31,16 @@ jobs:
       - name: Process problems
         run: go run scripts/process_problems.go
 
-      - name: Commit changes
+      - name: Rename problems in 0 directory
+        run: |
+          cd leetcode-db
+          go run cmd/populate-db/main.go
+
+      - name: Commit directory changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add problems/
           git add -u  # This will stage deletions of the old directories
-          git commit -m "Move processed problems to problems directory" || echo "No changes to commit"
+          git commit -m "Move and rename problems" || echo "No changes to commit"
           git push 

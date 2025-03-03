@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -254,101 +255,53 @@ func isLeetCodeProblemDir(path string) bool {
 	return hasGoFile
 }
 
+// Use git mv instead of os.Rename to preserve history
+func gitMv(oldPath, newPath string) error {
+	cmd := exec.Command("git", "mv", oldPath, newPath)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("git mv failed: %v", err)
+	}
+	return nil
+}
+
 func main() {
-	// Get current working directory
-	workspaceRoot, err := os.Getwd()
-	if err != nil {
-		fmt.Printf("Error getting current directory: %v\n", err)
-		return
-	}
+	// Path to the "0" problems directory
+	zeroDir := "problems/0"
 
-	// Fetch problems from LeetCode API
-	slugToID, titleToID, err := fetchProblems()
-	if err != nil {
-		fmt.Printf("Error fetching problems: %v\n", err)
-		return
-	}
-
-	// Read all directories
-	entries, err := os.ReadDir(workspaceRoot)
+	// Read all entries in the directory
+	entries, err := os.ReadDir(zeroDir)
 	if err != nil {
 		fmt.Printf("Error reading directory: %v\n", err)
-		return
+		os.Exit(1)
 	}
 
-	// Process each directory
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			continue
 		}
 
-		dirName := entry.Name()
-		dirPath := filepath.Join(workspaceRoot, dirName)
+		oldName := entry.Name()
 
-		// Skip if not a LeetCode problem directory
-		if !isLeetCodeProblemDir(dirPath) {
+		// Skip if it already starts with a number
+		if strings.HasPrefix(oldName, "0-") {
 			continue
 		}
 
-		// Skip if already in correct format (starts with a number but not "0-")
-		if matched, _ := regexp.MatchString(`^[1-9]\d*-`, dirName); matched {
+		// Create new name with "0-" prefix
+		newName := "0-" + oldName
+
+		// Create full paths
+		oldPath := filepath.Join(zeroDir, oldName)
+		newPath := filepath.Join(zeroDir, newName)
+
+		// Rename the directory using git mv
+		err := gitMv(oldPath, newPath)
+		if err != nil {
+			fmt.Printf("Error renaming %s to %s: %v\n", oldPath, newPath, err)
 			continue
 		}
 
-		// Get the problem name without the "0-" prefix
-		problemName := dirName
-		if strings.HasPrefix(dirName, "0-") {
-			problemName = dirName[2:]
-		}
-
-		// Try different variations of the directory name
-		normalizedName := normalizeTitle(problemName)
-		variations := generateVariations(normalizedName)
-
-		var id string
-		var found bool
-		for _, variation := range variations {
-			if id, found = slugToID[variation]; found {
-				break
-			}
-			if id, found = titleToID[variation]; found {
-				break
-			}
-		}
-
-		// If not found in the list, try fetching directly from GraphQL API
-		if !found {
-			id, err = fetchProblemBySlug(normalizedName)
-			if err == nil {
-				found = true
-			}
-		}
-
-		if found {
-			newName := fmt.Sprintf("%s-%s", id, normalizedName)
-			newPath := filepath.Join(workspaceRoot, newName)
-
-			if err := os.Rename(dirPath, newPath); err != nil {
-				fmt.Printf("Error renaming %s to %s: %v\n", dirPath, newPath, err)
-			} else {
-				fmt.Printf("Renamed %s to %s\n", dirName, newName)
-			}
-		} else {
-			fmt.Printf("Could not find problem number for: %s (normalized: %s)\n", dirName, normalizedName)
-			fmt.Printf("  Tried variations: %v\n", variations)
-			// Print a few similar slugs for debugging
-			fmt.Printf("  Similar slugs in LeetCode:\n")
-			count := 0
-			for slug := range slugToID {
-				if strings.Contains(slug, normalizedName[:min(5, len(normalizedName))]) {
-					fmt.Printf("    - %s\n", slug)
-					count++
-					if count >= 5 {
-						break
-					}
-				}
-			}
-		}
+		fmt.Printf("Renamed: %s -> %s\n", oldName, newName)
 	}
 }
 

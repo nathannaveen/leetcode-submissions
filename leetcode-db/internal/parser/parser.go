@@ -15,13 +15,11 @@ import (
 	"leetcode-db/internal/models"
 )
 
-// ProblemParser handles parsing of LeetCode problem directories
 type ProblemParser struct {
 	rootDir string
 	nextID  int // For generating sequential IDs for problems without numbers
 }
 
-// NewParser creates a new ProblemParser
 func NewParser(rootDir string) *ProblemParser {
 	return &ProblemParser{
 		rootDir: rootDir,
@@ -102,16 +100,15 @@ func cleanTitle(name string) string {
 
 // getGitCommitDate gets the latest commit date for a file
 func (p *ProblemParser) getGitCommitDate(filePath string) time.Time {
-	cmd := exec.Command("git", "log", "-1", "--format=%aI", "--", filePath)
+	// Use --follow to track file history through renames
+	cmd := exec.Command("git", "log", "--follow", "-1", "--format=%aI", "--", filePath)
 	cmd.Dir = p.rootDir
-	fmt.Printf("Running Git command: %s in directory: %s\n", cmd.String(), cmd.Dir)
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Printf("Error getting commit date for %s: %v\n", filePath, err)
 		return time.Now() // Fallback to current time if git command fails
 	}
 	date := strings.TrimSpace(string(out))
-	fmt.Printf("Git commit date for %s: %q\n", filePath, date)
 	if date == "" {
 		fmt.Printf("Empty commit date for %s, using current time\n", filePath)
 		return time.Now()
@@ -131,33 +128,27 @@ func isLeetCodeProblem(name string) bool {
 		return false
 	}
 
-	// Accept directories that follow LeetCode naming patterns:
-	// 1. Must contain either hyphens or underscores (typical LeetCode format)
-	// 2. Must not contain special characters except hyphens and underscores
-	if !strings.Contains(name, "_") && !strings.Contains(name, "-") {
+	// LeetCode problem directories should have this format:
+	// "1234-some-problem-name" or "1234_some_problem_name"
+	// where 1234 is the problem number
+
+	// Split on first hyphen or underscore
+	parts := regexp.MustCompile(`[-_]`).Split(name, 2)
+	if len(parts) != 2 {
 		return false
 	}
 
-	// Check for invalid characters (only allow letters, numbers, hyphens and underscores)
-	validNamePattern := regexp.MustCompile(`^[a-zA-Z0-9_-]+$`)
-	if !validNamePattern.MatchString(name) {
+	// First part should be a number
+	problemID := parts[0]
+	if _, err := strconv.Atoi(problemID); err != nil {
 		return false
 	}
 
-	// Skip directories that are clearly not LeetCode problems
-	nonLeetCodeKeywords := []string{
-		"bitbom", "bitgraph", "bomfather", "buildenforcer",
-		"docs", "ebpf", "glasskube", "guac", "iac", "imdb",
-		"minefield", "osv", "sbir", "svip", "teststuff",
-		"vuln", "scorecard", "test", "github", "workflow",
-		"docker", "git", "ci", "cd", "build", "deploy",
-	}
-
-	nameLower := strings.ToLower(name)
-	for _, keyword := range nonLeetCodeKeywords {
-		if strings.Contains(nameLower, keyword) {
-			return false
-		}
+	// Second part should be the problem name with only letters, numbers, hyphens, or underscores
+	problemName := parts[1]
+	validNamePattern := regexp.MustCompile(`^[a-zA-Z0-9-_]+$`)
+	if !validNamePattern.MatchString(problemName) {
+		return false
 	}
 
 	return true
@@ -183,22 +174,38 @@ func (p *ProblemParser) FindProblemDirs() ([]string, error) {
 		dirs = append(dirs, filepath.Join(p.rootDir, entry.Name()))
 	}
 
-	// Check problems/ directory
+	// Check problems/ directory and its subdirectories
 	problemsDir := filepath.Join(p.rootDir, "problems")
 	if _, err := os.Stat(problemsDir); err == nil {
-		entries, err := ioutil.ReadDir(problemsDir)
+		// First, get all hundred groups and the zero directory
+		hundredGroups, err := ioutil.ReadDir(problemsDir)
 		if err != nil {
 			return nil, err
 		}
 
-		for _, entry := range entries {
-			if !entry.IsDir() {
+		// Process each hundred group directory
+		for _, group := range hundredGroups {
+			if !group.IsDir() {
 				continue
 			}
-			if !isLeetCodeProblem(entry.Name()) {
+
+			// Process problems in this hundred group
+			groupPath := filepath.Join(problemsDir, group.Name())
+			problems, err := ioutil.ReadDir(groupPath)
+			if err != nil {
+				fmt.Printf("Error reading directory %s: %v\n", groupPath, err)
 				continue
 			}
-			dirs = append(dirs, filepath.Join(problemsDir, entry.Name()))
+
+			for _, problem := range problems {
+				if !problem.IsDir() {
+					continue
+				}
+				if !isLeetCodeProblem(problem.Name()) {
+					continue
+				}
+				dirs = append(dirs, filepath.Join(groupPath, problem.Name()))
+			}
 		}
 	}
 
