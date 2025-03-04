@@ -31,11 +31,6 @@ jobs:
       - name: Process problems
         run: go run scripts/process_problems.go
 
-      - name: Rename problems in 0 directory
-        run: |
-          cd leetcode-db
-          go run cmd/populate-db/main.go
-
       - name: Commit directory changes
         run: |
           git config --local user.email "action@github.com"
