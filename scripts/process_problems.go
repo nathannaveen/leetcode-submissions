@@ -100,8 +100,8 @@ func processNewProblems() {
 
 		name := entry.Name()
 
-		// Skip the problems directory and hidden directories
-		if name == "problems" || strings.HasPrefix(name, ".") {
+		// Skip the problems directory, leetcode-db, scripts, and hidden directories
+		if name == "problems" || name == "leetcode-db" || name == "scripts" || strings.HasPrefix(name, ".") {
 			continue
 		}
 

@@ -31,21 +31,32 @@ jobs:
           mkdir -p scripts
           mkdir -p leetcode-db
 
+      - name: Move misplaced folders (before processing)
+        run: |
+          if [ -d "problems/0/leetcode-db" ]; then
+            echo "Moving leetcode-db from problems/0 to root"
+            cp -r problems/0/leetcode-db/* leetcode-db/ || true
+            rm -rf problems/0/leetcode-db
+          fi
+          if [ -d "problems/0/scripts" ]; then
+            echo "Moving scripts from problems/0 to root"
+            cp -r problems/0/scripts/* scripts/ || true
+            rm -rf problems/0/scripts
+          fi
+
       - name: Process problems
         run: go run scripts/process_problems.go
 
-      - name: Move misplaced folders
+      - name: Move misplaced folders (after processing)
         run: |
-          # Check if folders exist in problems/0
           if [ -d "problems/0/leetcode-db" ]; then
             echo "Moving leetcode-db from problems/0 to root"
-            cp -r problems/0/leetcode-db/* leetcode-db/
+            cp -r problems/0/leetcode-db/* leetcode-db/ || true
             rm -rf problems/0/leetcode-db
           fi
-          
           if [ -d "problems/0/scripts" ]; then
             echo "Moving scripts from problems/0 to root"
-            cp -r problems/0/scripts/* scripts/
+            cp -r problems/0/scripts/* scripts/ || true
             rm -rf problems/0/scripts
           fi
 
@@ -56,6 +67,6 @@ jobs:
           git add problems/
           git add scripts/
           git add leetcode-db/
-          git add -u  # This will stage deletions of the old directories
+          git add -u
           git commit -m "Move and rename problems" || echo "No changes to commit"
           git push 
