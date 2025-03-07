@@ -124,7 +124,7 @@ func (p *ProblemParser) getGitCommitDate(filePath string) time.Time {
 // isLeetCodeProblem checks if a directory is likely a LeetCode problem
 func isLeetCodeProblem(name string) bool {
 	// Skip special directories
-	if name == "leetcode-db" || strings.HasPrefix(name, ".") {
+	if name == "problems" || name == "leetcode-db" || name == "scripts" || strings.HasPrefix(name, ".") {
 		return false
 	}
 
