@@ -25,17 +25,37 @@ jobs:
         with:
           go-version: '1.21'
 
-      - name: Create problems directory
-        run: mkdir -p problems
+      - name: Create directories
+        run: |
+          mkdir -p problems
+          mkdir -p scripts
+          mkdir -p leetcode-db
 
       - name: Process problems
         run: go run scripts/process_problems.go
+
+      - name: Move misplaced folders
+        run: |
+          # Check if folders exist in problems/0
+          if [ -d "problems/0/leetcode-db" ]; then
+            echo "Moving leetcode-db from problems/0 to root"
+            cp -r problems/0/leetcode-db/* leetcode-db/
+            rm -rf problems/0/leetcode-db
+          fi
+          
+          if [ -d "problems/0/scripts" ]; then
+            echo "Moving scripts from problems/0 to root"
+            cp -r problems/0/scripts/* scripts/
+            rm -rf problems/0/scripts
+          fi
 
       - name: Commit directory changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add problems/
+          git add scripts/
+          git add leetcode-db/
           git add -u  # This will stage deletions of the old directories
           git commit -m "Move and rename problems" || echo "No changes to commit"
           git push 
